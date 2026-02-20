@@ -48,9 +48,25 @@ jobs:
 
       - name: Generate changelog
         id: changelog
-        uses: metcalfc/changelog-generator@v4.3.1
-        with:
-          myToken: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # 获取上一个 tag
+          PREV_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
+          
+          if [ -z "$PREV_TAG" ]; then
+            # 如果没有上一个 tag，获取所有提交
+            CHANGELOG=$(git log --pretty=format:"- %s (%h)" HEAD)
+          else
+            # 获取两个 tag 之间的提交
+            CHANGELOG=$(git log --pretty=format:"- %s (%h)" ${PREV_TAG}..HEAD)
+          fi
+          
+          # 输出到文件
+          echo "changelog<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGELOG" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+          
+          # 也输出到文件供后续使用
+          echo "$CHANGELOG" > CHANGELOG.md
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
@@ -59,28 +75,37 @@ jobs:
           body: |
             ## 📦 版本：${{ steps.tag.outputs.tag }}
             
+            ### 📝 更新内容
+            
             ${{ steps.changelog.outputs.changelog }}
+            
+            ---
             
             ## 📥 安装说明
             
-            ### Chrome/Edge
+            ### Chrome / Edge
+            
             1. 下载 `chrome-table-to-excel-chrome-mv3.zip`
             2. 解压到任意目录
             3. 打开 Chrome 浏览器，访问 `chrome://extensions/`
-            4. 开启「开发者模式」
+            4. 开启右上角的「开发者模式」
             5. 点击「加载已解压的扩展程序」
             6. 选择解压后的目录
             
             ### Firefox
+            
             1. 下载 `chrome-table-to-excel-firefox.zip`
             2. 解压到任意目录
             3. 打开 Firefox 浏览器，访问 `about:debugging#/runtime/this-firefox`
             4. 点击「临时载入附加组件」
             5. 选择解压后目录中的 `manifest.json` 文件
             
-            ## 📝 更新日志
+            ---
             
-            详细更新内容请查看 [CHANGELOG](https://github.com/${{ github.repository }}/releases)
+            ## 🔗 链接
+            
+            - [查看完整提交历史](https://github.com/${{ github.repository }}/commits)
+            - [报告问题](https://github.com/${{ github.repository }}/issues)
           files: |
             dist/*.zip
           draft: false

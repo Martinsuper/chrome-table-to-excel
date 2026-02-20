@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>Icon Generator</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      background: #1a202c;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+    .container {
+      text-align: center;
+      color: white;
+    }
+    canvas {
+      display: block;
+      margin: 20px auto;
+      background: #2d3748;
+      border-radius: 16px;
+    }
+    button {
+      padding: 12px 24px;
+      font-size: 14px;
+      font-weight: 600;
+      color: white;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin: 10px;
+    }
+    button:hover {
+      transform: translateY(-1px);
+    }
+    .sizes {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .size-item {
+      text-align: center;
+    }
+    .size-item canvas {
+      width: 64px;
+      height: 64px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎨 图标生成器</h1>
+    <div class="sizes">
+      <div class="size-item">
+        <canvas id="icon16" width="16" height="16"></canvas>
+        <p>16x16</p>
+      </div>
+      <div class="size-item">
+        <canvas id="icon48" width="48" height="48"></canvas>
+        <p>48x48</p>
+      </div>
+      <div class="size-item">
+        <canvas id="icon128" width="128" height="128"></canvas>
+        <p>128x128</p>
+      </div>
+    </div>
+    <button onclick="downloadIcons()">📥 下载所有图标</button>
+    <button onclick="location.reload()">🔄 重新生成</button>
+  </div>
+
+  <script>
+    function drawIcon(canvas) {
+      const ctx = canvas.getContext('2d');
+      const size = canvas.width;
+      const scale = size / 128;
+
+      // 清空
+      ctx.clearRect(0, 0, size, size);
+
+      // 创建渐变背景
+      const gradient = ctx.createLinearGradient(0, 0, size, size);
+      gradient.addColorStop(0, '#667eea');
+      gradient.addColorStop(1, '#764ba2');
+
+      // 绘制圆角矩形背景
+      const margin = 6 * scale;
+      const radius = 24 * scale;
+      const rectSize = size - 2 * margin;
+      
+      ctx.beginPath();
+      ctx.roundRect(margin, margin, rectSize, rectSize, radius);
+      ctx.fillStyle = gradient;
+      ctx.fill();
+
+      // 添加高光效果
+      const highlightGradient = ctx.createRadialGradient(
+        size * 0.3, size * 0.3, 0,
+        size * 0.5, size * 0.5, size * 0.6
+      );
+      highlightGradient.addColorStop(0, 'rgba(255, 255, 255, 0.2)');
+      highlightGradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+      ctx.beginPath();
+      ctx.roundRect(margin, margin, rectSize, rectSize, radius);
+      ctx.fillStyle = highlightGradient;
+      ctx.fill();
+
+      // 绘制表格图标
+      const iconMargin = 32 * scale;
+      const iconSize = size - 2 * iconMargin;
+      const iconLeft = iconMargin;
+      const iconTop = iconMargin;
+
+      // 表格背景
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+      ctx.beginPath();
+      ctx.roundRect(iconLeft, iconTop, iconSize, iconSize, 4 * scale);
+      ctx.fill();
+
+      // 表格线条颜色
+      ctx.strokeStyle = '#e2e8f0';
+      ctx.lineWidth = Math.max(1, 2 * scale);
+      ctx.lineCap = 'round';
+
+      // 横线
+      const row1 = iconTop + iconSize * 0.33;
+      const row2 = iconTop + iconSize * 0.66;
+      
+      ctx.beginPath();
+      ctx.moveTo(iconLeft + 4 * scale, row1);
+      ctx.lineTo(iconLeft + iconSize - 4 * scale, row1);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(iconLeft + 4 * scale, row2);
+      ctx.lineTo(iconLeft + iconSize - 4 * scale, row2);
+      ctx.stroke();
+
+      // 竖线
+      const col1 = iconLeft + iconSize * 0.33;
+      const col2 = iconLeft + iconSize * 0.66;
+
+      ctx.beginPath();
+      ctx.moveTo(col1, iconTop + 4 * scale);
+      ctx.lineTo(col1, iconTop + iconSize - 4 * scale);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(col2, iconTop + 4 * scale);
+      ctx.lineTo(col2, iconTop + iconSize - 4 * scale);
+      ctx.stroke();
+
+      // 表头高亮
+      const headerHeight = iconSize * 0.33;
+      ctx.fillStyle = 'rgba(102, 126, 234, 0.15)';
+      ctx.beginPath();
+      ctx.roundRect(iconLeft + 4 * scale, iconTop + 4 * scale, iconSize - 8 * scale, headerHeight - 4 * scale, 2 * scale);
+      ctx.fill();
+    }
+
+    function downloadIcons() {
+      [16, 48, 128].forEach(size => {
+        const canvas = document.getElementById(`icon${size}`);
+        const link = document.createElement('a');
+        link.download = `icon-${size}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      });
+    }
+
+    // 绘制所有图标
+    [16, 48, 128].forEach(size => {
+      const canvas = document.getElementById(`icon${size}`);
+      drawIcon(canvas);
+    });
+  </script>
+</body>
+</html>

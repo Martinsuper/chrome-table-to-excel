@@ -15,7 +15,7 @@ const tableRegistry = new Map<string, HTMLTableElement>();
 function extractTableInfo(table: HTMLTableElement, index: number) {
   const rows = Array.from(table.querySelectorAll('tr'));
   const preview: string[][] = [];
-  
+
   // 获取表格名称
   let name = '表格';
   const caption = table.querySelector('caption');
@@ -27,20 +27,20 @@ function extractTableInfo(table: HTMLTableElement, index: number) {
     const className = table.className?.toString().split(' ')[0];
     if (className) name = className;
   }
-  
+
   // 获取预览数据（前 5 行 5 列）
   rows.forEach((row, i) => {
     if (i >= 5) return;
     const cells = Array.from(row.querySelectorAll('th, td'));
     preview.push(cells.slice(0, 5).map(cell => cell.innerText.trim()));
   });
-  
-  const cols = rows.length > 0 
+
+  const cols = rows.length > 0
     ? Math.max(...Array.from(rows).map(r => r.querySelectorAll('th, td').length))
     : 0;
-  
+
   return {
-    id: `table-${index}-${Date.now()}`,
+    id: `table-${index}`,
     index,
     name,
     rows: rows.length,

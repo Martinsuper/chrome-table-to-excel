@@ -8,7 +8,7 @@ export default defineBackground(() => {
     if (details.reason === 'install') {
       // 首次安装，可以打开欢迎页面
       chrome.tabs.create({
-        url: 'https://github.com/your-repo/table-to-excel#readme',
+        url: 'https://github.com/Martinsuper/chrome-table-to-excel/blob/main/README.md',
       });
     }
   });

@@ -25,6 +25,12 @@ body {
   height: 100%;
 }
 
+/* Font Awesome 图标样式覆盖 */
+.svg-inline--fa {
+  display: inline-block;
+  fill: currentColor;
+}
+
 /* 滚动条样式 */
 ::-webkit-scrollbar {
   width: 6px;

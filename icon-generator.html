@@ -2,181 +2,180 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <title>Icon Generator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>图标生成器 - Table to Excel</title>
   <style>
     body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
+      justify-content: center;
       min-height: 100vh;
       margin: 0;
-      background: #1a202c;
-      font-family: system-ui, -apple-system, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      gap: 24px;
     }
     .container {
-      text-align: center;
-      color: white;
-    }
-    canvas {
-      display: block;
-      margin: 20px auto;
-      background: #2d3748;
+      background: white;
+      padding: 32px;
       border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      text-align: center;
+    }
+    h1 {
+      margin: 0 0 8px;
+      color: #2d3748;
+    }
+    p {
+      color: #718096;
+      margin: 0 0 24px;
+    }
+    .preview {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+    .preview-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .preview-item canvas {
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    .preview-item span {
+      font-size: 12px;
+      color: #4a5568;
     }
     button {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
       padding: 12px 24px;
+      border-radius: 8px;
       font-size: 14px;
       font-weight: 600;
-      color: white;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      border: none;
-      border-radius: 8px;
       cursor: pointer;
-      margin: 10px;
+      transition: transform 0.2s, box-shadow 0.2s;
     }
     button:hover {
-      transform: translateY(-1px);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
     }
-    .sizes {
-      display: flex;
-      gap: 20px;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-    .size-item {
-      text-align: center;
-    }
-    .size-item canvas {
-      width: 64px;
-      height: 64px;
+    .status {
+      margin-top: 16px;
+      font-size: 14px;
+      color: #48bb78;
     }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>🎨 图标生成器</h1>
-    <div class="sizes">
-      <div class="size-item">
-        <canvas id="icon16" width="16" height="16"></canvas>
-        <p>16x16</p>
+    <p>使用 Font Awesome 表格图标生成插件图标</p>
+    <div class="preview">
+      <div class="preview-item">
+        <canvas id="canvas16" width="16" height="16"></canvas>
+        <span>16x16</span>
       </div>
-      <div class="size-item">
-        <canvas id="icon48" width="48" height="48"></canvas>
-        <p>48x48</p>
+      <div class="preview-item">
+        <canvas id="canvas48" width="48" height="48"></canvas>
+        <span>48x48</span>
       </div>
-      <div class="size-item">
-        <canvas id="icon128" width="128" height="128"></canvas>
-        <p>128x128</p>
+      <div class="preview-item">
+        <canvas id="canvas128" width="128" height="128"></canvas>
+        <span>128x128</span>
       </div>
     </div>
-    <button onclick="downloadIcons()">📥 下载所有图标</button>
-    <button onclick="location.reload()">🔄 重新生成</button>
+    <button onclick="downloadIcons()">📥 下载图标到 public 文件夹</button>
+    <div class="status" id="status"></div>
   </div>
 
   <script>
-    function drawIcon(canvas) {
+    // Font Awesome table 图标的 SVG 路径（简化版）
+    const tableIconPath = `
+      M 4 4 C 2.8954305 4 2 4.8954305 2 6 L 2 18 C 2 19.104569 2.8954305 20 4 20 L 20 20 C 21.104569 20 22 19.104569 22 18 L 22 6 C 22 4.8954305 21.104569 4 20 4 L 4 4 z
+      M 4 8 L 20 8 L 20 10 L 4 10 L 4 8 z
+      M 4 12 L 20 12 L 20 14 L 4 14 L 4 12 z
+      M 4 16 L 20 16 L 20 18 L 4 18 L 4 16 z
+      M 8 4 L 8 20 L 10 20 L 10 4 L 8 4 z
+      M 14 4 L 14 20 L 16 20 L 16 4 L 14 4 z
+    `;
+
+    function drawIcon(canvas, size) {
       const ctx = canvas.getContext('2d');
-      const size = canvas.width;
-      const scale = size / 128;
-
-      // 清空
+      const scale = size / 24;
+      
+      // 清空画布
       ctx.clearRect(0, 0, size, size);
-
+      
       // 创建渐变背景
       const gradient = ctx.createLinearGradient(0, 0, size, size);
       gradient.addColorStop(0, '#667eea');
       gradient.addColorStop(1, '#764ba2');
-
+      
       // 绘制圆角矩形背景
-      const margin = 6 * scale;
-      const radius = 24 * scale;
-      const rectSize = size - 2 * margin;
-      
-      ctx.beginPath();
-      ctx.roundRect(margin, margin, rectSize, rectSize, radius);
+      const radius = size * 0.1667; // 约 1/6
       ctx.fillStyle = gradient;
-      ctx.fill();
-
-      // 添加高光效果
-      const highlightGradient = ctx.createRadialGradient(
-        size * 0.3, size * 0.3, 0,
-        size * 0.5, size * 0.5, size * 0.6
-      );
-      highlightGradient.addColorStop(0, 'rgba(255, 255, 255, 0.2)');
-      highlightGradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
       ctx.beginPath();
-      ctx.roundRect(margin, margin, rectSize, rectSize, radius);
-      ctx.fillStyle = highlightGradient;
+      ctx.roundRect(0, 0, size, size, radius);
       ctx.fill();
-
-      // 绘制表格图标
-      const iconMargin = 32 * scale;
-      const iconSize = size - 2 * iconMargin;
-      const iconLeft = iconMargin;
-      const iconTop = iconMargin;
-
-      // 表格背景
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
-      ctx.beginPath();
-      ctx.roundRect(iconLeft, iconTop, iconSize, iconSize, 4 * scale);
-      ctx.fill();
-
-      // 表格线条颜色
-      ctx.strokeStyle = '#e2e8f0';
-      ctx.lineWidth = Math.max(1, 2 * scale);
-      ctx.lineCap = 'round';
-
-      // 横线
-      const row1 = iconTop + iconSize * 0.33;
-      const row2 = iconTop + iconSize * 0.66;
       
-      ctx.beginPath();
-      ctx.moveTo(iconLeft + 4 * scale, row1);
-      ctx.lineTo(iconLeft + iconSize - 4 * scale, row1);
-      ctx.stroke();
-
-      ctx.beginPath();
-      ctx.moveTo(iconLeft + 4 * scale, row2);
-      ctx.lineTo(iconLeft + iconSize - 4 * scale, row2);
-      ctx.stroke();
-
-      // 竖线
-      const col1 = iconLeft + iconSize * 0.33;
-      const col2 = iconLeft + iconSize * 0.66;
-
-      ctx.beginPath();
-      ctx.moveTo(col1, iconTop + 4 * scale);
-      ctx.lineTo(col1, iconTop + iconSize - 4 * scale);
-      ctx.stroke();
-
-      ctx.beginPath();
-      ctx.moveTo(col2, iconTop + 4 * scale);
-      ctx.lineTo(col2, iconTop + iconSize - 4 * scale);
-      ctx.stroke();
-
-      // 表头高亮
-      const headerHeight = iconSize * 0.33;
-      ctx.fillStyle = 'rgba(102, 126, 234, 0.15)';
-      ctx.beginPath();
-      ctx.roundRect(iconLeft + 4 * scale, iconTop + 4 * scale, iconSize - 8 * scale, headerHeight - 4 * scale, 2 * scale);
-      ctx.fill();
+      // 绘制白色表格图标
+      ctx.fillStyle = 'white';
+      ctx.save();
+      ctx.translate(size * 0.0833, size * 0.0833); // 2px padding 缩放
+      ctx.scale(scale * 0.8333, scale * 0.8333);
+      
+      // 使用 Path2D 绘制表格图标
+      const path = new Path2D(tableIconPath);
+      ctx.fill(path);
+      
+      ctx.restore();
     }
 
-    function downloadIcons() {
-      [16, 48, 128].forEach(size => {
-        const canvas = document.getElementById(`icon${size}`);
+    // 绘制所有尺寸的图标
+    function drawAllIcons() {
+      drawIcon(document.getElementById('canvas16'), 16);
+      drawIcon(document.getElementById('canvas48'), 48);
+      drawIcon(document.getElementById('canvas128'), 128);
+    }
+
+    // 下载图标
+    async function downloadIcons() {
+      const status = document.getElementById('status');
+      const sizes = [
+        { canvas: 'canvas16', filename: 'icon-16.png' },
+        { canvas: 'canvas48', filename: 'icon-48.png' },
+        { canvas: 'canvas128', filename: 'icon-128.png' },
+      ];
+
+      status.textContent = '正在下载图标...';
+      
+      for (const { canvas, filename } of sizes) {
+        const canvasEl = document.getElementById(canvas);
+        const dataUrl = canvasEl.toDataURL('image/png');
+        
+        // 创建下载链接
         const link = document.createElement('a');
-        link.download = `icon-${size}.png`;
-        link.href = canvas.toDataURL('image/png');
+        link.download = filename;
+        link.href = dataUrl;
         link.click();
-      });
+        
+        // 等待一小段时间
+        await new Promise(resolve => setTimeout(resolve, 100));
+      }
+      
+      status.textContent = '✅ 图标已下载！请将它们移动到 public 文件夹。';
     }
 
-    // 绘制所有图标
-    [16, 48, 128].forEach(size => {
-      const canvas = document.getElementById(`icon${size}`);
-      drawIcon(canvas);
-    });
+    // 页面加载时绘制图标
+    drawAllIcons();
   </script>
 </body>
 </html>

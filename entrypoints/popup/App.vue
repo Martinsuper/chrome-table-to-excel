@@ -4,13 +4,7 @@
       <div class="header-content">
         <div class="logo">
           <div class="logo-icon">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-              <rect x="3" y="3" width="18" height="18" rx="3" fill="white" fill-opacity="0.2"/>
-              <path d="M3 9H21" stroke="white" stroke-width="2"/>
-              <path d="M3 15H21" stroke="white" stroke-width="2"/>
-              <path d="M9 3V21" stroke="white" stroke-width="2"/>
-              <path d="M15 3V21" stroke="white" stroke-width="2"/>
-            </svg>
+            <font-awesome-icon :icon="['fas', 'table']" size="xl" />
           </div>
           <div class="title-group">
             <h1>Table to Excel</h1>
@@ -35,17 +29,11 @@
       <!-- 错误状态 -->
       <div v-else-if="error" class="error">
         <div class="error-icon">
-          <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
-            <circle cx="12" cy="12" r="10" stroke="#F56565" stroke-width="1.5" fill="#FFF5F5"/>
-            <path d="M12 7V13" stroke="#F56565" stroke-width="2" stroke-linecap="round"/>
-            <circle cx="12" cy="17" r="1" fill="#F56565"/>
-          </svg>
+          <font-awesome-icon :icon="['fas', 'triangle-exclamation']" size="4x" />
         </div>
         <p class="error-text">{{ error }}</p>
         <button @click="refreshTables" class="btn btn-retry">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-            <path d="M4 4V9H4.58C5.77 6.65 8.24 5 11 5C14.76 5 17.93 7.58 18.8 11.2M20 20V15H19.42C18.23 17.35 15.76 19 13 19C9.24 19 6.07 16.42 5.2 12.8M4.58 9H4V9.05" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
+          <font-awesome-icon :icon="['fas', 'rotate']" />
           重新加载
         </button>
       </div>
@@ -53,13 +41,7 @@
       <!-- 空状态 -->
       <div v-else-if="tables.length === 0" class="empty">
         <div class="empty-icon">
-          <svg width="64" height="64" viewBox="0 0 24 24" fill="none">
-            <rect x="3" y="3" width="18" height="18" rx="2" stroke="#CBD5E0" stroke-width="1.5"/>
-            <path d="M3 9H21" stroke="#CBD5E0" stroke-width="1.5"/>
-            <path d="M9 3V21" stroke="#CBD5E0" stroke-width="1.5"/>
-            <path d="M15 3V21" stroke="#CBD5E0" stroke-width="1.5"/>
-            <circle cx="12" cy="12" r="3" fill="#E2E8F0"/>
-          </svg>
+          <font-awesome-icon :icon="['fas', 'table']" size="4x" />
         </div>
         <p class="empty-text">当前页面没有找到表格</p>
         <p class="empty-hint">试试打开包含表格的网页</p>
@@ -73,9 +55,7 @@
             <div class="title-actions">
               <label class="select-all" @click.stop>
                 <div class="checkbox-wrapper" :class="{ checked: isAllSelected }">
-                  <svg v-if="isAllSelected" width="12" height="12" viewBox="0 0 12 12" fill="none">
-                    <path d="M2 6L5 9L10 3" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
+                  <font-awesome-icon v-if="isAllSelected" :icon="['fas', 'check']" size="xs" />
                 </div>
                 <span>全选</span>
               </label>
@@ -97,11 +77,7 @@
             @click="toggleTable(table.id)"
           >
             <div class="table-icon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                <rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/>
-                <path d="M3 9H21" stroke="currentColor" stroke-width="2"/>
-                <path d="M9 3V21" stroke="currentColor" stroke-width="2"/>
-              </svg>
+              <font-awesome-icon :icon="['fas', 'table']" />
             </div>
             <div class="table-info">
               <div class="table-name">{{ table.name }}</div>
@@ -125,10 +101,7 @@
         <div class="export-options">
           <div class="form-group">
             <label for="filename" class="form-label">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                <path d="M14 2H6C5.46957 2 4.96086 2.21071 4.58579 2.58579C4.21071 2.96086 4 3.46957 4 4V20C4 20.5304 4.21071 21.0391 4.58579 21.4142C4.96086 21.7893 5.46957 22 6 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V8L14 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M14 2V8H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
+              <font-awesome-icon :icon="['fas', 'file']" />
               文件名
             </label>
             <div class="input-wrapper">
@@ -145,12 +118,7 @@
 
           <div class="form-group">
             <label class="form-label">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                <rect x="3" y="3" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2"/>
-                <rect x="14" y="3" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2"/>
-                <rect x="3" y="14" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2"/>
-                <rect x="14" y="14" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2"/>
-              </svg>
+              <font-awesome-icon :icon="['fas', 'layer-group']" />
               导出模式
             </label>
             <div class="radio-group">
@@ -162,10 +130,7 @@
                   :disabled="selectedTables.size !== 1"
                 />
                 <div class="radio-content">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                    <rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/>
-                    <path d="M3 9H21" stroke="currentColor" stroke-width="2"/>
-                  </svg>
+                  <font-awesome-icon :icon="['fas', 'file']" size="lg" />
                   <span>单个文件</span>
                 </div>
               </label>
@@ -177,10 +142,7 @@
                   :disabled="selectedTables.size < 2"
                 />
                 <div class="radio-content">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                    <rect x="3" y="3" width="7" height="18" rx="1" stroke="currentColor" stroke-width="2"/>
-                    <rect x="14" y="3" width="7" height="18" rx="1" stroke="currentColor" stroke-width="2"/>
-                  </svg>
+                  <font-awesome-icon :icon="['fas', 'clone']" size="lg" />
                   <span>多个工作表</span>
                 </div>
               </label>
@@ -191,7 +153,10 @@
         <!-- 预览 -->
         <div v-if="previewData && previewData.length > 0" class="preview-section">
           <div class="preview-header">
-            <span class="preview-title">数据预览</span>
+            <span class="preview-title">
+              <font-awesome-icon :icon="['fas', 'eye']" />
+              数据预览
+            </span>
             <span class="preview-hint">前 5 行 5 列</span>
           </div>
           <div class="preview-table-wrapper">
@@ -214,23 +179,12 @@
         class="btn btn-primary btn-export"
         :disabled="exporting"
       >
-        <svg v-if="!exporting" width="18" height="18" viewBox="0 0 24 24" fill="none">
-          <path d="M21 15V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M7 10L12 15L17 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M12 15V3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        <svg v-else class="spinner" width="18" height="18" viewBox="0 0 24 24" fill="none">
-          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" stroke-opacity="0.25"/>
-          <path d="M12 2C17.5228 2 22 6.47715 22 12" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
-        </svg>
+        <font-awesome-icon v-if="!exporting" :icon="['fas', 'file-excel']" />
+        <font-awesome-icon v-else class="spinner" :icon="['fas', 'rotate']" spin />
         {{ exporting ? '导出中...' : `导出 ${selectedTables.size} 个表格` }}
       </button>
       <div v-else class="footer-hint">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
-          <path d="M12 16V12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          <circle cx="12" cy="8" r="1" fill="currentColor"/>
-        </svg>
+        <font-awesome-icon :icon="['fas', 'circle-info']" />
         <span>请选择要导出的表格</span>
       </div>
     </footer>
@@ -477,6 +431,11 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   backdrop-filter: blur(10px);
+  color: white;
+}
+
+.logo-icon .svg-inline--fa {
+  font-size: 24px;
 }
 
 .title-group h1 {
@@ -564,6 +523,10 @@ onMounted(() => {
   text-align: center;
 }
 
+.error-icon {
+  color: #f56565;
+}
+
 .error-text {
   color: #718096;
   font-size: 14px;
@@ -583,6 +546,7 @@ onMounted(() => {
 
 .empty-icon {
   opacity: 0.6;
+  color: #cbd5e0;
 }
 
 .empty-text {
@@ -649,6 +613,10 @@ onMounted(() => {
   transition: all 0.2s;
 }
 
+.checkbox-wrapper .svg-inline--fa {
+  color: white;
+}
+
 .checkbox-wrapper.checked {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   border-color: #667eea;
@@ -703,6 +671,13 @@ onMounted(() => {
   color: #a0aec0;
   flex-shrink: 0;
   transition: color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.table-icon .svg-inline--fa {
+  font-size: 18px;
 }
 
 .table-item:hover .table-icon {
@@ -795,8 +770,9 @@ onMounted(() => {
   font-size: 13px;
 }
 
-.form-label svg {
+.form-label .svg-inline--fa {
   color: #a0aec0;
+  font-size: 14px;
 }
 
 .input-wrapper {
@@ -882,8 +858,9 @@ onMounted(() => {
   cursor: not-allowed;
 }
 
-.radio-content svg {
+.radio-content .svg-inline--fa {
   flex-shrink: 0;
+  font-size: 20px;
 }
 
 /* Preview Section */
@@ -908,6 +885,13 @@ onMounted(() => {
   font-weight: 600;
   color: #4a5568;
   font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.preview-title .svg-inline--fa {
+  font-size: 12px;
 }
 
 .preview-hint {
@@ -984,6 +968,10 @@ onMounted(() => {
   animation: spin 1s linear infinite;
 }
 
+.btn-primary .svg-inline--fa {
+  font-size: 16px;
+}
+
 .btn-retry {
   background: #edf2f7;
   color: #4a5568;
@@ -998,6 +986,10 @@ onMounted(() => {
   background: #e2e8f0;
 }
 
+.btn-retry .svg-inline--fa {
+  font-size: 14px;
+}
+
 .footer-hint {
   display: flex;
   align-items: center;
@@ -1007,8 +999,9 @@ onMounted(() => {
   font-size: 13px;
 }
 
-.footer-hint svg {
+.footer-hint .svg-inline--fa {
   color: #cbd5e0;
+  font-size: 14px;
 }
 
 /* Scrollbar */

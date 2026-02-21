@@ -261,6 +261,23 @@ async function getCurrentTab(): Promise<chrome.tabs.Tab | null> {
   return tab || null;
 }
 
+// 确保 content script 已注入
+async function ensureContentScript(tabId: number) {
+  try {
+    // 尝试发送一个测试消息
+    await chrome.tabs.sendMessage(tabId, { action: 'ping' });
+  } catch {
+    // 如果失败，说明 content script 未加载，需要注入
+    // WXT 会自动将 content script 打包到 /content-scripts/content.js
+    await chrome.scripting.executeScript({
+      target: { tabId },
+      files: ['/content-scripts/content.js'],
+    });
+    // 等待一小段时间让 content script 初始化
+    await new Promise(resolve => setTimeout(resolve, 100));
+  }
+}
+
 // 加载页面中的表格
 async function loadTables() {
   loading.value = true;
@@ -272,8 +289,11 @@ async function loadTables() {
       throw new Error('无法获取当前标签页');
     }
 
+    // 确保 content script 已注入
+    await ensureContentScript(tab.id);
+
     const response = await chrome.tabs.sendMessage(tab.id, { action: 'getTables' });
-    
+
     if (!response.success) {
       throw new Error(response.error || '获取表格失败');
     }

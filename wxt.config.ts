@@ -36,7 +36,7 @@ export default defineConfig({
   contentScripts: {
     contentScript: {
       matches: ['<all_urls>'],
-      js: ['index.ts'],
+      run_at: 'document_idle',
     },
   },
 });

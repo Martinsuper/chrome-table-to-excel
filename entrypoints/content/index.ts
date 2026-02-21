@@ -103,6 +103,11 @@ export default defineContentScript({
       console.log('[Table Exporter] 收到消息:', message);
 
       switch (message.action) {
+        case 'ping':
+          // 心跳检测，只需响应
+          sendResponse({ success: true });
+          break;
+
         case 'getTables':
           // 获取页面中的所有表格
           const tables = identifyTables();

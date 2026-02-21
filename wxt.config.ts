@@ -9,7 +9,7 @@ export default defineConfig({
   manifest: {
     name: 'Table to Excel Exporter',
     description: '导出网页表格为 Excel 文件，保留格式和样式',
-    version: '1.0.0',
+    version: '1.1.0',
     permissions: [
       'activeTab',
       'scripting',
